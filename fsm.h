@@ -22,8 +22,10 @@ struct transition_table_entry
   /*transition key size, it refers to the size input taken by the state*/
   int transition_key_size;
 
-  /*pointer ti the next state if key matches with input*/
-  state_ *next_state[MAX_STATES_TO_POINT];
+  /*pointer to the next state if key matches with input*/
+  //state_ *next_state[MAX_STATES_TO_POINT];
+
+  state_ *next_state;
 
 };
 typedef struct transition_table_entry tt_entry;
@@ -31,7 +33,7 @@ typedef struct transition_table_entry tt_entry;
 struct finite_state_table
 {
   /*number of transisiton table entries per state*/
-  tt_entry tt_entries[MAX_TRANSITION_TABLE_ENTRIES];
+  tt_entry *tt_entries[MAX_TRANSITION_TABLE_ENTRIES];
 };
 typedef struct finite_state_table tt_;
 
@@ -65,6 +67,12 @@ struct finite_state_machine
 };
 typedef struct finite_state_machine fsm_;
 
+//declaring the APIs
+fsm_* create_new_fsm(char *fsm_name);
+state_* create_new_state(char *state_name, bool is_final);
+void set_state_as_intial_state(fsm_ *fsm, state_ *state);
+tt_entry* get_next_avail_tt_entry(tt_ *transition_table);
+tt_entry* create_and_insert_new_tt_entry(tt_ *transition_table, char *transition_key, int transition_key_size, state_ *next_state);
 
 
 
