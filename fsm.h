@@ -13,6 +13,7 @@
 
 
 typedef enum{FSM_FALSE, FSM_TRUE}fsm_bool;
+typedef enum{fsm_no_transition, fsm_no_error}fsm_error_t;
 
 struct transition_table_entry
 {
@@ -74,6 +75,6 @@ void set_state_as_intial_state(fsm_ *fsm, state_ *state);
 tt_entry* get_next_avail_tt_entry(tt_ *transition_table);
 tt_entry* create_and_insert_new_tt_entry(tt_ *transition_table, char *transition_key, int transition_key_size, state_ *next_state);
 
-
+fsm_error_t execute_fsm(fsm_ *fsm, char *input_buffer, int size, fsm_bool fsm_result);
 
 #endif 

@@ -69,3 +69,61 @@ tt_entry* create_and_insert_new_tt_entry(tt_ *transition_table, char *transition
     exit(0);
   }
 }
+
+
+state_* fsm_apply_transition(fsm_ *fsm, state_ *current_state, char transition_inp, int trans_buf_len, int *len_read)
+{
+  int i=0;
+  while(i < MAX_TRANSITION_TABLE_ENTRIES)
+  {
+    if(transition_inp == current_state->state_tt->tt_entries[i])
+    {
+      printf("\nparsed = %d ",transition_inp);
+      current_state = current_state->state_tt->tt_entries[i]->next_state;
+      len_read = fsm->cursor + 1;
+      return current_state;
+    }
+    i++;
+  }
+}
+
+fsm_error_t execute_fsm(fsm_ *fsm, char *input_buffer, int size, fsm_bool fsm_result)
+{
+  state_ *initial_state = fsm->initial_state;
+  assert(initial_state);
+
+  state_ *current_state = initial_state;
+  state_ *next_state = NULL;
+
+  fsm->cursor = 0;
+  int length_read = 0;
+  int input_buf_len = size; //length of input buffer
+
+  if(fsm_result)
+  {
+    fsm_result = FSM_FALSE;
+  }
+
+  while(fsm->cursor < MAX_BUF_SIZE)
+  {
+    length_read = 0;
+    next_state = fsm_apply_transition(fsm, current_state, input_buffer + fsm->cursor, input_buf_len - fsm->cursor, &length_read);
+    if(length_read)
+    {
+      fsm->cursor += length_read; //incrementing the cursor by the transistion size
+
+      if(!next_state)
+      {
+         printf("\nError : no next state ");
+         return fsm_no_transition;
+      }
+      
+    }
+    else
+    {
+        printf("\nInvalid input string!, cannot go furthur ");
+        return fsm_no_transition;
+    }
+  }
+
+}
